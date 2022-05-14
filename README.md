@@ -25,4 +25,4 @@ go build && ./simple-demo
 |梁研骏|拓展接口-2|
 
 ## 提交方式 
-自己新建分支如`dev-lyj`，修改完代码会`merge`到`main`分支
+自己新建分支如`dev-lyj`，修改完代码会`pull request`到`main`分支
