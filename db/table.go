@@ -36,3 +36,9 @@ type Video struct {
 	CoverUrl   string    //视频封面地址
 	CreateTime time.Time //创建时间
 }
+
+//Relation 关注表
+type Relation struct {
+	UserID   uint `gorm:"primaryKey"`
+	ToUserID uint `gorm:"primaryKey"`
+}
