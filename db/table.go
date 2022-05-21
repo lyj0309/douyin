@@ -14,7 +14,7 @@ type User struct {
 
 // Comment 评论表
 type Comment struct {
-	ID         int       `gorm:"primaryKey;autoIncrement'"`
+	ID         uint      `gorm:"primaryKey;autoIncrement'"`
 	UserID     uint      //评论者
 	VideoID    uint      //评论视频
 	Content    string    //内容
@@ -30,15 +30,16 @@ type Like struct {
 
 // Video 视频表
 type Video struct {
-	ID         int `gorm:"primaryKey;autoIncrement'"`
+	ID         uint   `gorm:"primaryKey;autoIncrement'"`
+	Title      string //视频标题
 	UserID     uint
 	PlayUrl    string    //视频播放地址
 	CoverUrl   string    //视频封面地址
 	CreateTime time.Time //创建时间
 }
 
-//Relation 关注表
-type Relation struct {
-	UserID   uint `gorm:"primaryKey"`
-	ToUserID uint `gorm:"primaryKey"`
-}
+//Relation 关注表,使用redis实现
+//type Relation struct {
+//	UserID   uint `gorm:"primaryKey"`
+//	ToUserID uint `gorm:"primaryKey"`
+//}
