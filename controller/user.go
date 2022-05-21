@@ -1,92 +1,117 @@
 package controller
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
-	"sync/atomic"
+
+	"github.com/gin-gonic/gin"
+	"github.com/lyj0309/douyin/db"
+	"github.com/lyj0309/douyin/utils"
 )
 
-// usersLoginInfo use map to store user info, and key is username+password for demo
-// user data will be cleared every time the server starts
-// test data: username=zhanglei, password=douyin
-var usersLoginInfo = map[string]User{
-	"zhangleidouyin": {
-		Id:            1,
-		Name:          "zhanglei",
-		FollowCount:   10,
-		FollowerCount: 5,
-		IsFollow:      true,
-	},
-}
-
-var userIdSequence = int64(1)
-
-type UserLoginResponse struct {
-	Response
-	UserId int64  `json:"user_id,omitempty"`
-	Token  string `json:"token"`
-}
-
-type UserResponse struct {
-	Response
-	User User `json:"user"`
-}
+// code 0：成功， 1：失败， 2：用户或密码为空
 
 func Register(c *gin.Context) {
-	username := c.Query("username")
-	password := c.Query("password")
 
-	token := username + password
-
-	if _, exist := usersLoginInfo[token]; exist {
-		c.JSON(http.StatusOK, UserLoginResponse{
-			Response: Response{StatusCode: 1, StatusMsg: "User already exist"},
+	var user db.User
+	user.Name = c.PostForm("username")
+	user.Password = c.PostForm("password")
+	if user.Name == "" || user.Password == "" {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 2,
+			"msg":  "密码或用户名不能为空",
 		})
-	} else {
-		atomic.AddInt64(&userIdSequence, 1)
-		newUser := User{
-			Id:   userIdSequence,
-			Name: username,
-		}
-		usersLoginInfo[token] = newUser
-		c.JSON(http.StatusOK, UserLoginResponse{
-			Response: Response{StatusCode: 0},
-			UserId:   userIdSequence,
-			Token:    username + password,
-		})
+		return
 	}
+	//将用户信息插入数据库，生成token
+	db.Mysql.AutoMigrate(&user)
+
+	//需要判断该用户名是否被占用
+	res := db.Mysql.Where("username = ?", user.Name).Find(&user)
+	if res.RowsAffected != 0 {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 1,
+			"msg":  "该用户名已被占用",
+		})
+		return
+	}
+
+	db.Mysql.Create(&user)
+	token, err := utils.GenToken(user.Name)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 0,
+			"msg":  "无效的token",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": 0,
+		"msg":  "success",
+		"data": gin.H{"token": token},
+	})
+	return
+
 }
 
 func Login(c *gin.Context) {
-	username := c.Query("username")
-	password := c.Query("password")
 
-	token := username + password
+	username := c.PostForm("username")
+	password := c.PostForm("password")
 
-	if user, exist := usersLoginInfo[token]; exist {
-		c.JSON(http.StatusOK, UserLoginResponse{
-			Response: Response{StatusCode: 0},
-			UserId:   user.Id,
-			Token:    token,
+	if username == "" || password == "" {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 2,
+			"msg":  "用户账号或密码为空",
 		})
-	} else {
-		c.JSON(http.StatusOK, UserLoginResponse{
-			Response: Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
-		})
+		return
 	}
+
+	//先查看是否存在该用户
+	var u db.User
+	db.Mysql.AutoMigrate(&u)
+	db.Mysql.Where("username = ? AND password = ?", username, password).Find(&u)
+
+	// select * from user where
+	if u.Name != username || u.Password != password {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 1,
+			"msg":  "用户名或密码错误",
+		})
+		return
+	}
+	token, err := utils.GenToken(u.Name)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 1,
+			"msg":  "生成token失败",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code": 0,
+		"msg":  "登录成功",
+		"data": gin.H{"token": token},
+	})
 }
 
-func UserInfo(c *gin.Context) {
-	token := c.Query("token")
+func GetUserInfo(c *gin.Context) {
+	username, _ := c.Get("username")
+	var user db.User
 
-	if user, exist := usersLoginInfo[token]; exist {
-		c.JSON(http.StatusOK, UserResponse{
-			Response: Response{StatusCode: 0},
-			User:     user,
+	result := db.Mysql.Where(" username = ?", username).Find(&user)
+
+	if result.RowsAffected == 0 {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 2,
+			"msg":  "该用户不存在",
 		})
-	} else {
-		c.JSON(http.StatusOK, UserResponse{
-			Response: Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
-		})
+		return
 	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": 0,
+		"msg":  "success",
+		"data": user,
+	})
+	return
 }
