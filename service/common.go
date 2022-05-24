@@ -31,12 +31,21 @@ func GetUserRes(MyUserID string, toUserID []uint) *[]UserRes {
 	var res []UserRes
 
 	//fmt.Println(MyUserID, toUserID)
+
+	//这里mysql in会去重
 	db.Mysql.Model(&db.User{}).Find(&subUsers, toUserID)
-	//fmt.Println(subUsers)
-	for i := 0; i < len(subUsers); i++ {
+
+	m := make(map[int64]*subUser)
+	for i, user := range subUsers {
+		m[user.Id] = &subUsers[i]
+	}
+
+	//fmt.Println(subUsers, len(subUsers))
+
+	for _, u := range toUserID {
 		res = append(res, UserRes{
-			subUser:  &subUsers[i],
-			IsFollow: IsFollow(MyUserID, Itoa(subUsers[i].Id)),
+			subUser:  m[int64(u)],
+			IsFollow: IsFollow(MyUserID, Itoa(u)),
 		})
 	}
 
