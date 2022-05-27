@@ -16,6 +16,7 @@ func initRouter(r *gin.Engine) {
 	apiRouter.GET("/feed/", controller.Feed)
 	apiRouter.POST("/user/register/", controller.Register)
 	apiRouter.POST("/user/login/", controller.Login)
+	apiRouter.POST("/user/logout/", controller.Logout)
 
 	apiRouter.Use(utils.JWTAuthMiddleware())
 
