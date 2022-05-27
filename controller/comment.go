@@ -9,7 +9,7 @@ import (
 
 type CommentListResponse struct {
 	Response
-	CommentList []Comment `json:"comment_list,omitempty"`
+	CommentList []service.Comment `json:"comment_list,omitempty"`
 }
 
 // CommentAction no practical effect, just check if token is valid
