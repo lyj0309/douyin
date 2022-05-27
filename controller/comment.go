@@ -14,15 +14,11 @@ type CommentListResponse struct {
 
 // CommentAction no practical effect, just check if token is valid
 func CommentAction(c *gin.Context) {
-	token := c.PostForm("token")
 	userIdStr := c.PostForm("user_id")
 	videoIdStr := c.PostForm("video_id")
 	actionTypeStr := c.PostForm("action_type")
 	commentText := c.PostForm("comment_text")
 	commentIdStr := c.PostForm("comment_id")
-	if _, exist := usersLoginInfo[token]; !exist { //判断是否登陆
-		c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
-	}
 	userId, _ := strconv.ParseInt(userIdStr, 10, 64)
 	videoId, _ := strconv.ParseInt(videoIdStr, 10, 64)
 	actionType, _ := strconv.ParseInt(actionTypeStr, 10, 8)
@@ -41,12 +37,10 @@ func CommentAction(c *gin.Context) {
 
 // CommentList all videos have same demo comment list
 func CommentList(c *gin.Context) {
-	//token := c.PostForm("token")//该功能不需要判断登陆吧
-	//userIdStr := c.PostForm("user_id")
+	userIdStr := c.GetString(ctxUidKey)
 	videoIdStr := c.PostForm("video_id")
-	//userId, _ := strconv.ParseInt(userIdStr, 10, 64)//用于判断是否关注
 	videoId, _ := strconv.ParseInt(videoIdStr, 10, 64)
-	commentList, _ := service.CommentList(videoId)
+	commentList, _ := service.CommentList(videoId, userIdStr)
 	c.JSON(http.StatusOK, CommentListResponse{
 		Response:    Response{StatusCode: 0},
 		CommentList: commentList,

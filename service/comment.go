@@ -8,8 +8,8 @@ import (
 
 func CommentAdd(userId int64, videoId int64, commentText string) error {
 	comment := db.Comment{
-		UserId:     userId,
-		VideoId:    videoId,
+		UserID:     uint(userId),
+		VideoID:    uint(videoId),
 		Content:    commentText,
 		CreateTime: time.Now(),
 		Delete:     false,
@@ -27,7 +27,7 @@ func CommentDelete(commentId int64) error {
 	return nil
 }
 
-func CommentList(videoId int64) ([]controller.Comment, error) {
+func CommentList(videoId int64, userIdStr string) ([]controller.Comment, error) {
 	var comments []db.Comment //数据库查询的评论列表
 	err := db.Mysql.Where("video_id = ?", videoId).Where("delete = ?", false).Find(&comments).Error
 	if err != nil {
@@ -37,16 +37,16 @@ func CommentList(videoId int64) ([]controller.Comment, error) {
 	var commentList []controller.Comment //前端评论列表标准
 	for _, comment := range comments {
 		var user db.User
-		db.Mysql.Where("id = ?", comment.UserId).Find(&user)
+		db.Mysql.Where("id = ?", comment.UserID).Find(&user)
 		userVo := controller.User{
-			Id:            user.Id,
+			Id:            int64(user.ID),
 			Name:          user.Name,
-			FollowCount:   user.FollowCount,
-			FollowerCount: user.FollowerCount,
-			IsFollow:      false, //关注功能逻辑
+			FollowCount:   int64(user.FollowCount),
+			FollowerCount: int64(user.FollowerCount),
+			IsFollow:      IsFollow(userIdStr, Itoa(user.ID)), //关注功能逻辑
 		}
 		commentVo := controller.Comment{
-			Id:         comment.Id,
+			Id:         int64(comment.ID),
 			User:       userVo,
 			Content:    comment.Content,
 			CreateDate: comment.CreateTime.Format("2006-01-02 15:04:05"),
