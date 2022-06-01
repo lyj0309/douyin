@@ -30,12 +30,14 @@ type Like struct {
 
 // Video 视频表
 type Video struct {
-	ID         uint   `gorm:"primaryKey;autoIncrement'"`
-	Title      string //视频标题
-	UserID     uint
-	PlayUrl    string    //视频播放地址
-	CoverUrl   string    //视频封面地址
-	CreateTime time.Time //创建时间
+	ID            uint   `gorm:"primaryKey;autoIncrement'"`
+	Title         string //视频标题
+	UserID        uint
+	PlayUrl       string    //视频播放地址
+	CoverUrl      string    //视频封面地址
+	FavoriteCount uint      //点赞总数
+	CommentCount  uint      //评论总数
+	CreateTime    time.Time //创建时间
 }
 
 //Relation 关注表,使用redis实现
