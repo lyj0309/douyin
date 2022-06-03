@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/lyj0309/douyin/db"
+	// "github.com/lyj0309/douyin/service"
 )
 
 type VideoListResponse struct {
@@ -14,15 +15,15 @@ type VideoListResponse struct {
 	VideoList []db.Video `json:"video_list"`
 }
 
-var usersLoginInfo = map[string]User{
-	"zhangleidouyin": {
-		Id:            1,
-		Name:          "zhanglei",
-		FollowCount:   10,
-		FollowerCount: 5,
-		IsFollow:      true,
-	},
-}
+// var usersLoginInfo = map[string]User{
+// 	"zhangleidouyin": {
+// 		Id:            1,
+// 		Name:          "zhanglei",
+// 		FollowCount:   10,
+// 		FollowerCount: 5,
+// 		IsFollow:      true,
+// 	},
+// }
 
 // Publish check token then save upload file to public directory
 func Publish(c *gin.Context) {
@@ -71,7 +72,7 @@ func Publish(c *gin.Context) {
 	video.PlayUrl = "localhost:8080/static/" + finalName
 	video.CoverUrl = "localhost:8080/static/20190330000110_360x480_55.jpg"
 
-	fmt.Print("title = ", video.Title)
+	// fmt.Print("title = ", video.Title)
 	db.Mysql.Save(&video)
 
 	c.JSON(http.StatusOK, Response{
@@ -86,7 +87,7 @@ func PublishList(c *gin.Context) {
 
 	user_name, _ := c.Get("username")
 
-	fmt.Print("&&&", user_name, "&&&&")
+	// fmt.Print("&&&", user_name, "&&&&")
 
 	result := db.Mysql.Where(" Name = ?", user_name).Find(&user)
 
