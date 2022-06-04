@@ -5,6 +5,7 @@ import (
 	"github.com/lyj0309/douyin/db"
 	"github.com/lyj0309/douyin/utils"
 	"net/http"
+	"time"
 )
 
 // code 0：成功， 1：失败， 2：用户或密码为空
@@ -36,6 +37,12 @@ func Register(c *gin.Context) {
 		return
 	}
 
+	//获取当前时间戳
+	now := time.Now()
+	currentTime := now.Unix()
+	t := time.Unix(currentTime, 0)
+	
+	user.RegisterTime = t
 	//将用户信息插入数据库
 	db.Mysql.Save(&user)
 
