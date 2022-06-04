@@ -5,7 +5,7 @@ import "time"
 // User 用户表
 type User struct {
 	ID            uint `gorm:"primaryKey;autoIncrement'"`
-	Username      string
+	Name          string
 	Password      string
 	FollowCount   int       //关注总数
 	FollowerCount int       //粉丝总数

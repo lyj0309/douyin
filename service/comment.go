@@ -53,7 +53,7 @@ func CommentList(videoId int64, userIdStr string) ([]Comment, error) {
 		db.Mysql.Where("id = ?", comment.UserID).Find(&user)
 		userVo := User{
 			Id:            int64(user.ID),
-			Name:          user.Username,
+			Name:          user.Name,
 			FollowCount:   int64(user.FollowCount),
 			FollowerCount: int64(user.FollowerCount),
 			IsFollow:      IsFollow(userIdStr, Itoa(user.ID)), //关注功能逻辑
