@@ -13,7 +13,9 @@ import (
 func Register(c *gin.Context) {
 
 	var user db.User
+
 	user.Name = c.Query("username")
+
 	user.Password = c.Query("password")
 
 	if user.Name == "" || user.Password == "" {
@@ -25,7 +27,9 @@ func Register(c *gin.Context) {
 	}
 
 	//需要判断该用户名是否被占用
+
 	res := db.Mysql.Where("name = ? AND password = ?", user.Name, user.Password).Find(&user)
+
 	if res.RowsAffected != 0 {
 		c.JSON(http.StatusOK, gin.H{
 			"status_code": 1,
@@ -38,6 +42,7 @@ func Register(c *gin.Context) {
 	db.Mysql.Save(&user)
 
 	token, err := utils.GenToken(user.ID, user.Name)
+
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"status_code": 1,
@@ -71,7 +76,7 @@ func Login(c *gin.Context) {
 	//先查看是否存在该用户
 	var user db.User
 
-	res := db.Mysql.Find(&user, "username = ? AND password = ?", username, password)
+	res := db.Mysql.Find(&user, "name = ? AND password = ?", username, password)
 
 	if res.RowsAffected == 0 {
 		c.JSON(http.StatusOK, gin.H{
@@ -82,6 +87,7 @@ func Login(c *gin.Context) {
 	}
 
 	token, err := utils.GenToken(user.ID, user.Name)
+
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"status_code": 1,
@@ -99,7 +105,9 @@ func Login(c *gin.Context) {
 }
 
 func GetUserInfo(c *gin.Context) {
+
 	uid, _ := c.Get("user_id")
+
 	var user db.User
 
 	result := db.Mysql.Where(" id = ?", uid).Find(&user)

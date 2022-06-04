@@ -22,6 +22,7 @@ type MyClaims struct {
 }
 
 //生成token并返回
+
 func GenToken(userId uint, username string) (string, error) {
 	c := MyClaims{
 		userId,
@@ -67,6 +68,7 @@ func JWTAuthMiddleware() func(c *gin.Context) {
 		}
 
 		res, err := ParseToken(token)
+
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{
 				"status_code": 1,
@@ -75,8 +77,10 @@ func JWTAuthMiddleware() func(c *gin.Context) {
 			return
 		}
 		//保存当前请求信息到上下文c中
+
 		c.Set("user_id", res.UserId)
 		c.Set("username", res.Username)
+
 		//继续执行后续的请求
 		c.Next()
 
