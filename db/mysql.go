@@ -19,7 +19,7 @@ func init() {
 		panic("failed to connect database")
 	}
 
-	err = Mysql.AutoMigrate(User{}, Comment{}, Like{}, Video{}, Relation{})
+	err = Mysql.AutoMigrate(User{}, Comment{}, Like{}, Video{})
 	if err != nil {
 		logrus.Errorln("表生成出错", err)
 		return

@@ -14,7 +14,7 @@ const TokenExpireDuration = time.Hour * 24
 
 var MySecret = []byte("这是一段生成token的密钥")
 
-// 用来决定JWT中应该存储哪些数据，username是自定义数据
+// 用来决定JWT中应该存储哪些数据
 type MyClaims struct {
 	UserId   uint   `json:"userId"`
 	Username string `json:"username"`
@@ -22,7 +22,10 @@ type MyClaims struct {
 }
 
 //生成token并返回
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
 func GenToken(userId uint, username string) (string, error) {
 	c := MyClaims{
 		userId,

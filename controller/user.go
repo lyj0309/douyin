@@ -1,11 +1,10 @@
 package controller
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 	"github.com/lyj0309/douyin/db"
 	"github.com/lyj0309/douyin/utils"
+	"net/http"
 )
 
 // code 0：成功， 1：失败， 2：用户或密码为空
@@ -15,7 +14,6 @@ func Register(c *gin.Context) {
 	var user db.User
 
 	user.Name = c.Query("username")
-
 	user.Password = c.Query("password")
 
 	if user.Name == "" || user.Password == "" {
@@ -105,7 +103,6 @@ func Login(c *gin.Context) {
 }
 
 func GetUserInfo(c *gin.Context) {
-
 	uid, _ := c.Get("user_id")
 
 	var user db.User
@@ -124,5 +121,5 @@ func GetUserInfo(c *gin.Context) {
 		"status_msg":  "success",
 		"user":        user,
 	})
-	return
+
 }
