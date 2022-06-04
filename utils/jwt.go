@@ -22,10 +22,7 @@ type MyClaims struct {
 }
 
 //生成token并返回
-<<<<<<< HEAD
 
-=======
->>>>>>> main
 func GenToken(userId uint, username string) (string, error) {
 	c := MyClaims{
 		userId,
