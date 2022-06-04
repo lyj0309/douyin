@@ -34,7 +34,6 @@ func GetUserRes(MyUserID string, toUserID []uint) *[]UserRes {
 
 	//这里mysql in会去重
 	db.Mysql.Model(&db.User{}).Find(&subUsers, toUserID)
-
 	m := make(map[int64]*subUser)
 	for i, user := range subUsers {
 		m[user.Id] = &subUsers[i]
