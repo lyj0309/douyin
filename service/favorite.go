@@ -1,5 +1,6 @@
 package service
 
+
 import (
 	"github.com/lyj0309/douyin/db"
 	"gorm.io/gorm"
@@ -110,3 +111,4 @@ func VideoList(userId int64) ([]FavoriteVideo, error) {
 	}
 	return favoriteVideos, nil
 }
+
