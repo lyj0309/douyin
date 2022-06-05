@@ -15,27 +15,16 @@ type CommentResponse struct {
 	Response
 	Comment service.Comment `json:"comment,omitempty"`
 }
-type CommentAct struct {
-	UserId      string
-	VideoId     string
-	ActionType  string
-	CommentText string
-	CommentId   string
-}
 
 // CommentAction no practical effect, just check if token is valid
 func CommentAction(c *gin.Context) {
-	var commentAct CommentAct
-	if err := c.ShouldBind(&commentAct); err != nil {
-		c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: err.Error()})
-		return
-	}
-	userId, _ := strconv.ParseInt(commentAct.UserId, 10, 64)
-	videoId, _ := strconv.ParseInt(commentAct.VideoId, 10, 64)
-	commentId, _ := strconv.ParseInt(commentAct.CommentId, 10, 64)
 
-	if commentAct.ActionType == "1" {
-		commentVo, err := service.CommentAdd(userId, videoId, commentAct.CommentText)
+	userId, _ := strconv.ParseInt(c.GetString("user_id"), 10, 64)
+	videoId, _ := strconv.ParseInt(c.Query("video_id"), 10, 64)
+	actionType := c.Query("action_type")
+	if actionType == "1" {
+		commentText := c.Query("comment_text")
+		commentVo, err := service.CommentAdd(userId, videoId, commentText)
 		if err != nil {
 			c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: err.Error()})
 			return
@@ -44,7 +33,8 @@ func CommentAction(c *gin.Context) {
 			Response: Response{StatusCode: 0, StatusMsg: "add Success"},
 			Comment:  commentVo,
 		})
-	} else if commentAct.ActionType == "2" {
+	} else if actionType == "2" {
+		commentId, _ := strconv.ParseInt(c.Query("comment_id"), 10, 64)
 		if err := service.CommentDelete(commentId, videoId); err != nil {
 			c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: err.Error()})
 			return
@@ -58,7 +48,7 @@ func CommentAction(c *gin.Context) {
 
 // CommentList all videos have same demo comment list
 func CommentList(c *gin.Context) {
-	userIdStr := c.GetString(ctxUidKey)
+	userIdStr := c.GetString("user_id")
 	videoIdStr := c.Query("video_id")
 	videoId, _ := strconv.ParseInt(videoIdStr, 10, 64)
 	commentList, _ := service.CommentList(videoId, userIdStr)
