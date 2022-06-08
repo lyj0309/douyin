@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/lyj0309/douyin/service"
 	"net/http"
@@ -14,13 +15,10 @@ type FavoriteListResponse struct {
 
 // FavoriteAction no practical effect, just check if token is valid
 func FavoriteAction(c *gin.Context) {
-	userIdStr := c.PostForm("user_id")
-	// userIdStr := c.GetString(ctxUidKey)
-	videoIdStr := c.PostForm("video_id")
-	actionTypeStr := c.PostForm("action_type")
-	userId, _ := strconv.ParseInt(userIdStr, 10, 64)
-	videoId, _ := strconv.ParseInt(videoIdStr, 10, 64)
-	actionType, _ := strconv.ParseInt(actionTypeStr, 10, 8)
+	userId, _ := strconv.ParseInt(c.GetString("user_id"), 10, 64)
+	fmt.Printf("%d\n", userId)
+	videoId, _ := strconv.ParseInt(c.Query("video_id"), 10, 64)
+	actionType, _ := strconv.ParseInt(c.Query("action_type"), 10, 8)
 
 	// 验证用户
 	switch actionType {
@@ -36,7 +34,7 @@ func FavoriteAction(c *gin.Context) {
 		if err != nil {
 			c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: err.Error()})
 		} else {
-			c.JSON(http.StatusOK, Response{StatusCode: 0, StatusMsg: "Like success"})
+			c.JSON(http.StatusOK, Response{StatusCode: 0, StatusMsg: "Unlike success"})
 		}
 	default:
 		c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "parameter error"})
@@ -45,12 +43,10 @@ func FavoriteAction(c *gin.Context) {
 
 // FavoriteList all users have same favorite video list
 func FavoriteList(c *gin.Context) {
-	// userIdStr := c.GetString(ctxUidKey)
-	userIdStr := c.Query("user_id")
-	userId, _ := strconv.ParseInt(userIdStr, 10, 64)
-	videoList, _ := service.VideoList(userId)
+	userId, _ := strconv.ParseInt(c.GetString("user_id"), 10, 64)
+	favoriteList, _ := service.FavoriteList(userId)
 	c.JSON(http.StatusOK, FavoriteListResponse{
 		Response:  Response{StatusCode: 0},
-		VideoList: videoList,
+		VideoList: favoriteList,
 	})
 }

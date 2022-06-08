@@ -1,6 +1,5 @@
 package service
 
-
 import (
 	"github.com/lyj0309/douyin/db"
 	"gorm.io/gorm"
@@ -40,13 +39,8 @@ func Like(userId int64, videoId int64) error {
 	return nil
 }
 func Unlike(userId int64, videoId int64) error {
-	err := db.Mysql.Where("user_id = ? AND video_id = ?", uint(userId), uint(videoId)).Delete(&db.Like{}).Error
-	if err != nil {
-		return err
-	}
-	return nil
 	db.Mysql.Transaction(func(tx *gorm.DB) error {
-		err := db.Mysql.Where("id = ?", userId).Delete(&db.Like{}).Error
+		err := db.Mysql.Where("user_id = ? AND video_id = ?", uint(userId), uint(videoId)).Delete(&db.Like{}).Error
 		if err != nil {
 			return err
 		}
@@ -59,7 +53,7 @@ func Unlike(userId int64, videoId int64) error {
 	return nil
 }
 
-func VideoList(userId int64) ([]FavoriteVideo, error) {
+func FavoriteList(userId int64) ([]FavoriteVideo, error) {
 	var likes []db.Like //数据库查询点赞列表
 	err := db.Mysql.Where("user_id = ?", userId).Find(&likes).Error
 	if err != nil {
@@ -94,7 +88,7 @@ func VideoList(userId int64) ([]FavoriteVideo, error) {
 	var favoriteVideos []FavoriteVideo
 	for _, video := range videos {
 		userVo := UserRes{
-			subUser:  m[int64(video.ID)],
+			subUser:  m[int64(video.UserID)],
 			IsFollow: IsFollow(Itoa(userId), Itoa(video.ID)),
 		}
 		videoVo := FavoriteVideo{
@@ -111,4 +105,3 @@ func VideoList(userId int64) ([]FavoriteVideo, error) {
 	}
 	return favoriteVideos, nil
 }
-
