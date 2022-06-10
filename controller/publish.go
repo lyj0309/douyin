@@ -28,11 +28,11 @@ type VideoListResponse struct {
 // Publish check token then save upload file to public directory
 func Publish(c *gin.Context) {
 	// 判断 token 中的 user 是否存在
-	username, _ := c.Get("username")
+	userid, _ := c.Get("user_id")
 	var user db.User
 	var video db.Video
 
-	result := db.Mysql.Where(" name = ?", username).Find(&user)
+	result := db.Mysql.Where(" ID = ?", userid).Find(&user)
 
 	if result.RowsAffected == 0 {
 		c.JSON(http.StatusOK, gin.H{
@@ -69,8 +69,9 @@ func Publish(c *gin.Context) {
 	// 读取视频标题title
 	video.Title = c.PostForm("title")
 	video.UserID = user.ID
-	video.PlayUrl = "localhost:8080/static/" + finalName
-	video.CoverUrl = "localhost:8080/static/20190330000110_360x480_55.jpg"
+	sys_url := "localhost:8080"
+	video.PlayUrl = sys_url + "/static/" + finalName
+	video.CoverUrl = sys_url + "/static/20190330000110_360x480_55.jpg"
 
 	// fmt.Print("title = ", video.Title)
 	db.Mysql.Save(&video)
@@ -85,11 +86,11 @@ func Publish(c *gin.Context) {
 func PublishList(c *gin.Context) {
 	var user db.User
 
-	user_name, _ := c.Get("username")
+	user_id, _ := c.Get("user_id")
 
 	// fmt.Print("&&&", user_name, "&&&&")
 
-	result := db.Mysql.Where(" Name = ?", user_name).Find(&user)
+	result := db.Mysql.Where(" ID = ?", user_id).Find(&user)
 
 	if result.RowsAffected == 0 {
 		c.JSON(http.StatusOK, gin.H{

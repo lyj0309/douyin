@@ -6,13 +6,13 @@ import (
 	"github.com/lyj0309/douyin/db"
 )
 
-// type User struct {
-// 	Id            int64  `json:"id,omitempty"`
-// 	Name          string `json:"name,omitempty"`
-// 	FollowCount   int64  `json:"follow_count,omitempty"`
-// 	FollowerCount int64  `json:"follower_count,omitempty"`
-// 	IsFollow      bool   `json:"is_follow,omitempty"`
-// }
+type User struct {
+	ID            int64  `json:"id,omitempty"`
+	Name          string `json:"name,omitempty"`
+	FollowCount   int64  `json:"follow_count,omitempty"`
+	FollowerCount int64  `json:"follower_count,omitempty"`
+	IsFollow      bool   `json:"is_follow,omitempty"`
+}
 type Video_list struct {
 	Id            int64  `json:"id,omitempty"`
 	Author        User   `json:"author"`
@@ -23,18 +23,18 @@ type Video_list struct {
 	IsFavorite    bool   `json:"is_favorite,omitempty"`
 }
 
-func UserExit(username string) error {
+func UserExit(userid int64) error {
 	var user db.User
-	if err := db.Mysql.Where("user_name = ?", username).Find(&user).Error; err != nil {
+	if err := db.Mysql.Where("user_id = ?", userid).Find(&user).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-func VideoAdd(username string, videotitle string, play_url string, cover_url string) error {
+func VideoAdd(userid int64, videotitle string, play_url string, cover_url string) error {
 
 	var user db.User
-	if err := db.Mysql.Where("user_name = ?", username).Find(&user).Error; err != nil {
+	if err := db.Mysql.Where("user_id = ?", userid).Find(&user).Error; err != nil {
 		return err
 	}
 
@@ -51,14 +51,14 @@ func VideoAdd(username string, videotitle string, play_url string, cover_url str
 	return nil
 }
 
-func VideoList(username string, videoId int64, userIdStr string) ([]Video_list, error) {
-	var user db.User
-	if err := db.Mysql.Where("user_name = ?", username).Find(&user).Error; err != nil {
-		return nil, err
-	}
+func VideoList(userid int64, userIdStr string) ([]Video_list, error) {
+	// var user db.User
+	// if err := db.Mysql.Where("user_name = ?", username).Find(&user).Error; err != nil {
+	// 	return nil, err
+	// }
 
 	var videos []db.Video
-	err := db.Mysql.Where("user_id = ?", user.ID).Find(&videos).Error
+	err := db.Mysql.Where("user_id = ?", userid).Find(&videos).Error
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +69,7 @@ func VideoList(username string, videoId int64, userIdStr string) ([]Video_list, 
 
 		db.Mysql.Where("id = ?", video.UserID).Find(&user)
 		userVo := User{
-			Id:            int64(user.ID),
+			ID:            int64(user.ID),
 			Name:          user.Name,
 			FollowCount:   int64(user.FollowCount),
 			FollowerCount: int64(user.FollowerCount),
