@@ -1,20 +1,9 @@
 package service
 
 import (
-	"fmt"
 	"github.com/lyj0309/douyin/db"
 	"time"
 )
-
-type feedSqlRes struct {
-	ID             uint
-	UserID         uint
-	PlayUrl        string
-	CreateTime     time.Time
-	CoverUrl       string
-	CommentCount   int
-	FavouriteCount int
-}
 
 type Video struct {
 	Id            int64    `json:"id,omitempty"`
@@ -27,43 +16,22 @@ type Video struct {
 }
 
 func Feed(latestTime time.Time, userID string) *[]Video {
-	var res []feedSqlRes
-	db.Mysql.Raw(`SELECT videos.id ,videos.user_id,videos.play_url,videos.create_time,videos.cover_url
-,comm_tmp.comment_count,like_tmp.favorite_count
+	var videos []db.Video
+	db.Mysql.Where(`create_time < ?`, latestTime).Limit(30).Find(&videos)
 
-FROM videos
-
-LEFT JOIN (
-	SELECT count(*) AS comment_count,video_id
-	FROM comments
-	GROUP BY comments.video_id
-) AS comm_tmp
-ON videos.id = comm_tmp.video_id
-
-LEFT JOIN (
-	SELECT COUNT(*) AS favorite_count,video_id
-	FROM likes
-	GROUP BY likes.video_id
-) AS like_tmp
-ON videos.id = like_tmp.video_id
-ORDER BY videos.create_time
-LIMIT 30
-`).Scan(&res)
-
-	fmt.Println(res, len(res))
+	//fmt.Println(res, len(res))
 
 	var uids []uint
-	for _, re := range res {
+	for _, re := range videos {
 		uids = append(uids, re.UserID)
 	}
 
-	fmt.Println(len(uids))
+	//fmt.Println(len(uids))
 	authors := GetUserRes(userID, uids)
 
-	fmt.Println("authors", authors, len(*authors))
-	var videos []Video
-	for i, re := range res {
-		fmt.Println(i)
+	//fmt.Println("authors", authors, len(*authors))
+	var videores []Video
+	for i, re := range videos {
 		var count int64
 
 		if userID != "" {
@@ -74,16 +42,16 @@ LIMIT 30
 			isfav = true
 		}
 
-		videos = append(videos, Video{
+		videores = append(videores, Video{
 			Id:            int64(re.ID),
 			Author:        &(*authors)[i],
 			PlayUrl:       re.PlayUrl,
 			CoverUrl:      re.CoverUrl,
-			FavoriteCount: int64(re.FavouriteCount),
+			FavoriteCount: int64(re.FavoriteCount),
 			CommentCount:  int64(re.CommentCount),
 			IsFavorite:    isfav,
 		})
 	}
 
-	return &videos
+	return &videores
 }
