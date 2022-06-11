@@ -60,11 +60,14 @@ func JWTAuthMiddleware() func(c *gin.Context) {
 		token, ok := c.GetQuery("token")
 
 		if !ok {
-			c.AbortWithStatusJSON(http.StatusOK, gin.H{
-				"status_code": 1,
-				"status_msg":  "未携带token",
-			})
-			return
+			token, ok = c.GetPostForm("token")
+			if !ok {
+				c.AbortWithStatusJSON(http.StatusOK, gin.H{
+					"status_code": 1,
+					"status_msg":  "未携带token",
+				})
+				return
+			}
 		}
 
 		res, err := ParseToken(token)
