@@ -3,7 +3,7 @@
 ### [项目说明](https://bytedance.feishu.cn/docx/doxcnbgkMy2J0Y3E6ihqrvtHXPg)  
 
 ### [接口说明](https://www.apifox.cn/apidoc/shared-8cc50618-0da6-4d5e-a398-76f3b8f766c5/api-18345145)
-
+### [演示视频](./demo.mp4)
 ## 功能特性
 + mysql
 + redis
