@@ -76,10 +76,10 @@ func FavoriteList(userId int64) ([]FavoriteVideo, error) {
 		authorsId = append(authorsId, video.UserID)
 	}
 	// 查询这些视频作者的信息 并建立映射关系
-	var authorRes []subUser
+	var authorRes []SubUser
 	// 会去重
 	db.Mysql.Model(&db.User{}).Find(&authorRes, authorsId)
-	m := make(map[int64]*subUser)
+	m := make(map[int64]*SubUser)
 	// 无重复的一个映射 作者名 到作者信息
 	for i, author := range authorRes {
 		m[author.Id] = &authorRes[i]
@@ -88,7 +88,7 @@ func FavoriteList(userId int64) ([]FavoriteVideo, error) {
 	var favoriteVideos []FavoriteVideo
 	for _, video := range videos {
 		userVo := UserRes{
-			subUser:  m[int64(video.UserID)],
+			SubUser:  m[int64(video.UserID)],
 			IsFollow: IsFollow(Itoa(userId), Itoa(video.ID)),
 		}
 		videoVo := FavoriteVideo{
