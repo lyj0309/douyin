@@ -6,13 +6,14 @@ var DemoVideos []service.Video
 
 func init() {
 	var DemoUser = service.UserRes{
+		SubUser: &service.SubUser{
+			Id:            1,
+			Name:          "TestUser",
+			FollowCount:   0,
+			FollowerCount: 0,
+		},
 		IsFollow: false,
 	}
-
-	DemoUser.Id = 1
-	DemoUser.Name = "TestUser"
-	DemoUser.FollowCount = 0
-	DemoUser.FollowerCount = 0
 
 	DemoVideos = []service.Video{
 		{
