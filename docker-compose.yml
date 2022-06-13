@@ -1,12 +1,23 @@
 version: '3'
 services:
+  douyin:
+    build: .
+    depends_on:
+     - mysql
+     - redis
+    ports:
+      - "8081:8081"
+
   mysql:
     image: mysql:8.0.29
     environment:
       MYSQL_ROOT_PASSWORD: 123456
       MYSQL_DATABASE: douyin
+      MYSQL_USER: douyin
+      MYSQL_PASSWORD: 123456
     ports:
     - "3306:3306"
+
   redis:
     image: redis:7.0.0
     ports:

@@ -6,16 +6,16 @@ import (
 	"github.com/lyj0309/douyin/db"
 )
 
-// type User struct {
-// 	ID            int64  `json:"id,omitempty"`
-// 	Name          string `json:"name,omitempty"`
-// 	FollowCount   int64  `json:"follow_count,omitempty"`
-// 	FollowerCount int64  `json:"follower_count,omitempty"`
-// 	IsFollow      bool   `json:"is_follow,omitempty"`
-// }
+type User struct {
+	ID            int64  `json:"id,omitempty"`
+	Name          string `json:"name,omitempty"`
+	FollowCount   int64  `json:"follow_count,omitempty"`
+	FollowerCount int64  `json:"follower_count,omitempty"`
+	IsFollow      bool   `json:"is_follow,omitempty"`
+}
 type Video_list struct {
-	Id int64 `json:"id,omitempty"`
-	//Author        User   `json:"author"`
+	Id            int64  `json:"id,omitempty"`
+	Author        User   `json:"author"`
 	PlayUrl       string `json:"play_url" json:"play_url,omitempty"`
 	CoverUrl      string `json:"cover_url,omitempty"`
 	FavoriteCount int64  `json:"favorite_count,omitempty"`
@@ -69,7 +69,7 @@ func VideoList(username string, videoId int64, userIdStr string) ([]Video_list, 
 
 		db.Mysql.Where("id = ?", video.UserID).Find(&user)
 		userVo := User{
-			Id:            int64(user.ID),
+			ID:            int64(user.ID),
 			Name:          user.Name,
 			FollowCount:   int64(user.FollowCount),
 			FollowerCount: int64(user.FollowerCount),

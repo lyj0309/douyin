@@ -1,9 +1,11 @@
 package controller
 
-var DemoVideos = []Video{
+import "github.com/lyj0309/douyin/service"
+
+var DemoVideos = []service.Video{
 	{
 		Id:            1,
-		Author:        DemoUser,
+		Author:        &DemoUser,
 		PlayUrl:       "https://www.w3schools.com/html/movie.mp4",
 		CoverUrl:      "https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg",
 		FavoriteCount: 0,
@@ -21,10 +23,13 @@ var DemoComments = []Comment{
 	},
 }
 
-var DemoUser = User{
-	Id:            1,
-	Name:          "TestUser",
-	FollowCount:   0,
-	FollowerCount: 0,
-	IsFollow:      false,
+var DemoUser = service.UserRes{
+	IsFollow: false,
+}
+
+func init() {
+	DemoUser.Id = 1
+	DemoUser.Name = "TestUser"
+	DemoUser.FollowCount = 0
+	DemoUser.FollowerCount = 0
 }
