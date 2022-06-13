@@ -34,6 +34,10 @@ func Feed(c *gin.Context) {
 	}
 	res := service.Feed(latestTime, "")
 
+	if res == nil || len(*res) == 0 {
+		res = &DemoVideos
+	}
+
 	c.JSON(http.StatusOK, FeedResponse{
 		Response:  Response{StatusCode: 0},
 		VideoList: res,
