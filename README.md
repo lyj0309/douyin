@@ -40,10 +40,11 @@
 ### publish/list
 ![ce5813ab16f09b690b8483376e4586b.png](https://wx1.sinaimg.cn/large/007WELPTly1h35t1td75nj30hw07vgn0.jpg)
 ### favorite/action
+![1dcd1f20bef523397b685340588247f.png](https://wx1.sinaimg.cn/large/007WELPTly1h370c1mh13j30v30j1q4z.jpg)
 ### favorite/list
+![b009f4dc257f13b94bdb99497819845.png](https://wx1.sinaimg.cn/large/007WELPTly1h370cewtwqj30wd0ep0uk.jpg)
 ### comment/list
 ![8f3fca4e86c3035acff34a54d6bea72.png](https://wx1.sinaimg.cn/large/007WELPTly1h348dawg6jj311u0jxdhy.jpg)
-
 ### comment/action
 ![67038def61f4826b78dfd5a4dbf4891.png](https://wx1.sinaimg.cn/large/007WELPTly1h348dioax2j31cr0lyq64.jpg)
 
