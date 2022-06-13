@@ -6,11 +6,11 @@ import (
 )
 
 type UserRes struct {
-	*subUser
+	*SubUser
 	IsFollow bool `json:"is_follow,omitempty"`
 }
 
-type subUser struct {
+type SubUser struct {
 	Id            int64  `json:"id,omitempty"`
 	Name          string `json:"name,omitempty"`
 	FollowCount   int64  `json:"follow_count,omitempty"`
@@ -27,14 +27,14 @@ func GetUser(userID string) *db.User {
 
 //GetUserRes 获取返回json的user结构体
 func GetUserRes(MyUserID string, toUserID []uint) *[]UserRes {
-	var subUsers []subUser
+	var subUsers []SubUser
 	var res []UserRes
 
 	//fmt.Println(MyUserID, toUserID)
 
 	//这里mysql in会去重
 	db.Mysql.Model(&db.User{}).Find(&subUsers, toUserID)
-	m := make(map[int64]*subUser)
+	m := make(map[int64]*SubUser)
 	for i, user := range subUsers {
 		m[user.Id] = &subUsers[i]
 	}
@@ -43,7 +43,7 @@ func GetUserRes(MyUserID string, toUserID []uint) *[]UserRes {
 
 	for _, u := range toUserID {
 		res = append(res, UserRes{
-			subUser:  m[int64(u)],
+			SubUser:  m[int64(u)],
 			IsFollow: IsFollow(MyUserID, Itoa(u)),
 		})
 	}
