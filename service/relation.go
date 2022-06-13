@@ -19,6 +19,8 @@ const (
 // RelationAction 关注
 func RelationAction(userID, toUserID, actionType string) error {
 
+	//fmt.Println("关注", "userid", userID, "to_userid", toUserID, actionType)
+
 	uid, _ := strconv.Atoi(userID)
 	tuid, _ := strconv.Atoi(toUserID)
 
@@ -85,7 +87,7 @@ func FollowerList(userID string) *[]UserRes {
 func fList(userID string, follower bool) *[]UserRes {
 
 	var key string
-	if follower {
+	if !follower {
 		key = followerPrefix + userID
 	} else {
 		key = followPrefix + userID

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"path/filepath"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/lyj0309/douyin/db"
@@ -69,8 +70,9 @@ func Publish(c *gin.Context) {
 	// 读取视频标题title
 	video.Title = c.PostForm("title")
 	video.UserID = user.ID
-	video.PlayUrl = "localhost:8080/static/" + finalName
-	video.CoverUrl = "localhost:8080/static/20190330000110_360x480_55.jpg"
+	video.PlayUrl = "http://49.233.7.107:8081/static/" + finalName
+	video.CoverUrl = "https://wx1.sinaimg.cn/large/007WELPTly1h371ow92iqj30bf0gnjyd.jpg"
+	video.CreateTime = time.Now()
 
 	// fmt.Print("title = ", video.Title)
 	db.Mysql.Save(&video)

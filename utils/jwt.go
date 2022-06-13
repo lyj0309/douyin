@@ -3,6 +3,7 @@ package utils
 import (
 	"errors"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -81,7 +82,7 @@ func JWTAuthMiddleware() func(c *gin.Context) {
 		}
 		//保存当前请求信息到上下文c中
 
-		c.Set("user_id", res.UserId)
+		c.Set("user_id", strconv.Itoa(int(res.UserId)))
 		c.Set("username", res.Username)
 
 		//继续执行后续的请求
