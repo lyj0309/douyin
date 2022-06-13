@@ -17,7 +17,8 @@ type Video struct {
 
 func Feed(latestTime time.Time, userID string) *[]Video {
 	var videos []db.Video
-	db.Mysql.Where(`create_time < ?`, latestTime).Limit(30).Find(&videos)
+	//db.Mysql.Where(`create_time < ?`, latestTime).Limit(30).Find(&videos)
+	db.Mysql.Limit(30).Find(&videos)
 
 	//fmt.Println(res, len(res))
 

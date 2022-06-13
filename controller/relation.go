@@ -14,8 +14,7 @@ type UserListResponse struct {
 // RelationAction 关注
 func RelationAction(c *gin.Context) {
 	// userID 是在jwt中写入上下文的
-	//userID := c.GetString("user_id")
-	userID := c.Query("user_id")
+	userID := c.GetString("user_id")
 	//获取参数
 	toUserID := c.Query("to_user_id")
 	actionType := c.Query("action_type")
@@ -45,7 +44,7 @@ func RelationAction(c *gin.Context) {
 func FollowList(c *gin.Context) {
 
 	//userList := service.FollowList(c.GetString("user_id"))
-	userList := service.FollowList(c.Query("user_id"))
+	userList := service.FollowList(c.GetString("user_id"))
 
 	c.JSON(http.StatusOK, UserListResponse{
 		Response: Response{
