@@ -34,7 +34,7 @@ func CommentAdd(userId int64, videoId int64, commentText string) (Comment, error
 	var user db.User
 	db.Mysql.Where("id = ?", userId).Find(&user)
 	userVo := UserRes{
-		subUser: &subUser{
+		SubUser: &SubUser{
 			Id:            int64(user.ID),
 			Name:          user.Name,
 			FollowCount:   int64(user.FollowCount),
@@ -76,10 +76,10 @@ func CommentList(videoId int64, userIdStr string) ([]Comment, error) {
 		uid = append(uid, comment.UserID)
 	}
 	//一次查询所有用户，减少查询次数
-	var users []subUser
+	var users []SubUser
 	db.Mysql.Model(&db.User{}).Find(&users, uid)
 
-	m := make(map[int64]*subUser)
+	m := make(map[int64]*SubUser)
 	for i, user := range users {
 		m[user.Id] = &users[i]
 	}
@@ -87,7 +87,7 @@ func CommentList(videoId int64, userIdStr string) ([]Comment, error) {
 	var commentList []Comment //前端评论列表标准
 	for _, comment := range comments {
 		userVo := UserRes{
-			subUser:  m[int64(comment.UserID)],
+			SubUser:  m[int64(comment.UserID)],
 			IsFollow: IsFollow(userIdStr, Itoa(comment.UserID)),
 		}
 		commentVo := Comment{
